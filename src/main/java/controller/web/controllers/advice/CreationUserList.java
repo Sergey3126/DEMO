@@ -1,5 +1,7 @@
 package controller.web.controllers.advice;
 
+import com.example.demo.User;
+
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,13 +15,14 @@ public class CreationUserList {
     public void SaveUser(User user, boolean bol) {
         try (FileWriter writer = new FileWriter("Users.txt", bol)) {
             writer.write(user.toString());
+            writer.write("\n");
             writer.flush();
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
     }
 
-    public Map<String, User> GiveUser(String nick) {
+    public Map<String, User> GiveUser() {
         try (FileReader reader = new FileReader("Users.txt")) {
             Map<String, User> map = new HashMap<>();
             int c;

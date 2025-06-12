@@ -1,4 +1,4 @@
-package controller.web.controllers.advice;
+package com.example.demo;
 
 
 public class User {

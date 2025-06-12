@@ -1,8 +1,7 @@
-package controller.web.controllers.rest;
+package controller.web.controllers.advice;
 
 
-import controller.web.controllers.advice.User;
-import controller.web.controllers.advice.CreationUserList;
+import com.example.demo.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -29,14 +28,25 @@ public class RestAdminPanelController {
         file.delete();
         return "Пользователи удалены";
     }
-
+    @GetMapping(value = {"getall", "getall/"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public String getAll(){
+        if (!file.exists()) {
+            return "Пользователей нет " ;
+        }
+        map = creationUserList.GiveUser();
+        return map.values().toString();
+    }
 
     @GetMapping(value = {"userinfo", "userinfo/"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     public String getInfo(@RequestParam String nick) throws IOException {
-
-        map = creationUserList.GiveUser(nick);
+        if (!file.exists()) {
+            return "Пользователей нет " ;
+        }
+        map = creationUserList.GiveUser();
         if (map.containsKey(nick)) {
             return String.valueOf(map.get(nick));
         }
@@ -52,7 +62,7 @@ public class RestAdminPanelController {
             creationUserList.SaveUser(user, true);
             return "Пользователь создан " + user.toString();
         }
-        map = creationUserList.GiveUser(nick);
+        map = creationUserList.GiveUser();
         if (!map.containsKey(nick)) {
             creationUserList.SaveUser(user, true);
             return "Пользователь создан " + user.toString();
@@ -62,27 +72,27 @@ public class RestAdminPanelController {
     }
 
 
-    @DeleteMapping(value = {"/deleteuser/{nick}", "/deleteuser/{nick}/"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
-    public String DeleteUser(@PathVariable String nick)  throws IOException {
-
-        Boolean bol = false;
-        if (!file.exists()) {
-            return "Пользователей нет " ;
-        }
-        map = creationUserList.GiveUser(nick);
-        if (map.containsKey(nick)) {
-            map.remove(nick);
-            for (Map.Entry<String, User> entry : map.entrySet()) {
-                User user = entry.getValue();
-                creationUserList.SaveUser(user, bol);
-                bol = true;
-            }
-            return "Пользователь удален";
-        }
-        return "Пользователь не найден";
-    }
+//    @DeleteMapping(value = {"/deleteuser/{nick}", "/deleteuser/{nick}/"}, produces = MediaType.APPLICATION_JSON_VALUE)
+//    @ResponseBody
+//    @ResponseStatus(HttpStatus.OK)
+//    public String DeleteUser(@PathVariable String nick)  throws IOException {
+//
+//        Boolean bol = false;
+//        if (!file.exists()) {
+//            return "Пользователей нет " ;
+//        }
+//        map = creationUserList.GiveUser(nick);
+//        if (map.containsKey(nick)) {
+//            map.remove(nick);
+//            for (Map.Entry<String, User> entry : map.entrySet()) {
+//                User user = entry.getValue();
+//                creationUserList.SaveUser(user, bol);
+//                bol = true;
+//            }
+//            return "Пользователь удален";
+//        }
+//        return "Пользователь не найден";
+//    }
 }
 
 
