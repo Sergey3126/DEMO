@@ -1,6 +1,8 @@
-package controller.web.controllers.advice;
+package com.example.demo.services;
 
-import com.example.demo.User;
+import com.example.demo.models.User;
+import com.example.demo.services.api.ICreationUserListService;
+import org.springframework.stereotype.Service;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -9,8 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-public class CreationUserList {
+@Service
+public class CreationUserList implements ICreationUserListService {
 
     public void SaveUser(User user, boolean bol) {
         try (FileWriter writer = new FileWriter("Users.txt", bol)) {

@@ -1,7 +1,8 @@
-package controller.web.controllers.advice;
+package com.example.demo.controllers.rest;
 
 
-import com.example.demo.User;
+import com.example.demo.models.User;
+import com.example.demo.services.CreationUserList;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -14,11 +15,12 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/admin/")
 public class RestAdminPanelController {
-    Map<String, User> map = new HashMap<>();
-    CreationUserList creationUserList = new CreationUserList();
-    File file = new File("Users.txt");
-    public RestAdminPanelController() {
+   private Map<String, User> map = new HashMap<>();
+   private final CreationUserList creationUserList;
+  private final   File file = new File("Users.txt");
 
+    public RestAdminPanelController(CreationUserList creationUserList) {
+        this.creationUserList = creationUserList;
     }
 
     @GetMapping(value = {"deleteall", "deleteall/"}, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -28,29 +30,30 @@ public class RestAdminPanelController {
         file.delete();
         return "Пользователи удалены";
     }
+
     @GetMapping(value = {"getall", "getall/"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public String getAll(){
+    public Map<String,User> getAll(){
         if (!file.exists()) {
-            return "Пользователей нет " ;
+            return null ;
         }
         map = creationUserList.GiveUser();
-        return map.values().toString();
+        return map;
     }
 
     @GetMapping(value = {"userinfo", "userinfo/"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public String getInfo(@RequestParam String nick) throws IOException {
+    public User getInfo(@RequestParam String nick) throws IOException {
         if (!file.exists()) {
-            return "Пользователей нет " ;
+            return null ;
         }
         map = creationUserList.GiveUser();
         if (map.containsKey(nick)) {
-            return String.valueOf(map.get(nick));
+            return map.get(nick);
         }
-        return "Такой пользователь не найден";
+        return null;
     }
 
     @PostMapping(value = {"createuser", "createuser/"}, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -71,28 +74,27 @@ public class RestAdminPanelController {
         return "Пользователь существует ";
     }
 
+    @DeleteMapping(value = {"deleteuser", "deleteuser/"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public String deleteUser(@RequestParam String nick) throws IOException {
+        Boolean bol = false;
+        if (!file.exists()) {
+            return "Пользователей нет " ;
+        }
+        map = creationUserList.GiveUser();
+        if (map.containsKey(nick)) {
+            map.remove(nick);
+            for (Map.Entry<String, User> entry : map.entrySet()) {
+                User user = entry.getValue();
+                creationUserList.SaveUser(user, bol);
+                bol = true;
+            }
+            return "Пользователь удален";
+        }
+        return "Пользователь не найден";
+    }
 
-//    @DeleteMapping(value = {"/deleteuser/{nick}", "/deleteuser/{nick}/"}, produces = MediaType.APPLICATION_JSON_VALUE)
-//    @ResponseBody
-//    @ResponseStatus(HttpStatus.OK)
-//    public String DeleteUser(@PathVariable String nick)  throws IOException {
-//
-//        Boolean bol = false;
-//        if (!file.exists()) {
-//            return "Пользователей нет " ;
-//        }
-//        map = creationUserList.GiveUser(nick);
-//        if (map.containsKey(nick)) {
-//            map.remove(nick);
-//            for (Map.Entry<String, User> entry : map.entrySet()) {
-//                User user = entry.getValue();
-//                creationUserList.SaveUser(user, bol);
-//                bol = true;
-//            }
-//            return "Пользователь удален";
-//        }
-//        return "Пользователь не найден";
-//    }
 }
 
 
