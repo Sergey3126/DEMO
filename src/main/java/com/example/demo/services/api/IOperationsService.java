@@ -8,12 +8,11 @@ import java.util.List;
 public interface IOperationsService {
 
 
-    User get (String login) throws IOException;
+    User get (String nick) throws IOException;
     List<User> getAll () throws IOException;
-    String getName (String login);
     User create (User userRaw) throws IOException;
-    User delete (String login) throws IOException;
-    User updateUser (User userRaw) throws IOException;
+    User delete (String nick) throws IOException;
+    User updateUser (String nick, User userRaw) throws IOException;
 
 
 

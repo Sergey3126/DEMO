@@ -8,6 +8,7 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,38 +24,43 @@ public class Operations implements IOperationsService {
     private final ConversionService conversionService;
 
     @Override
-    public User get(String login) throws IOException {
-        UserEntity userEntity = userStorage.findById(login).orElse(null);
-        System.out.println(userEntity);
+    public User get(String nick) throws IOException {
+        UserEntity userEntity = userStorage.findById(nick).orElse(null);
         User user = conversionService.convert(userEntity, User.class);
-        System.out.println(user);
         return user;
     }
 
-
+    @Override
    public List<User> getAll () throws IOException{
-return null;
+   List<UserEntity>   userEntityList =  userStorage.findAll();
+        List<User> userList= new ArrayList<>();
+   for (int i = 0; i<userEntityList.size(); i++){
+       UserEntity userEntity =userEntityList.get(i);
+       User user = conversionService.convert(userEntity, User.class);
+       userList.add(user);
+   }
+return userList;
     }
 
-  public   String getName (String login) {
-
-        return null;
-    }
 
     @Override
     public User create(User userRaw) throws IOException {
         userStorage.save(conversionService.convert(userRaw, UserEntity.class));
         return userRaw;
     }
-
-  public   User delete (String login) throws IOException {
+    @Override
+  public   User delete (String nick) throws IOException {
+        userStorage.delete(userStorage.findById(nick).orElse(null));
         return null;
 
     }
+    @Override
+  public  User updateUser (String nick, User userRaw) throws IOException {
 
-  public   User updateUser (User userRaw) throws IOException {
+userStorage.delete(userStorage.findById(nick).orElse(null));
+            userStorage.save(conversionService.convert(userRaw, UserEntity.class));
 
-        return null;
+        return userRaw;
     }
 
 

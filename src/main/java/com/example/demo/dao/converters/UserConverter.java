@@ -10,8 +10,9 @@ public class UserConverter implements Converter<UserEntity, User> {
         User user = new User();
         user.setName(source.getName());
         user.setSurname(source.getSurname());
-        user.setNickname(source.getNickname());
         user.setMail(source.getMail());
+        user.setNickname(source.getNickname());
+
         return user;
     }
 

@@ -9,7 +9,7 @@ public class UserConverterEntity implements Converter<User, UserEntity> {
     public UserEntity convert(User source) {
         UserEntity userEntity = new UserEntity();
         userEntity.setName(source.getName());
-        userEntity.setName(source.getName());
+        userEntity.setMail(source.getMail());
         userEntity.setSurname(source.getSurname());
         userEntity.setNickname(source.getNickname());
         return userEntity;
